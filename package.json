@@ -1,0 +1,59 @@
+{
+    "name": "thing-translator",
+    "version": "0.0.2",
+    "description": "Thing Translator is an AI Experiment that lets you point your camera at things to hear how to say them in a different language.",
+    "private": true,
+    "main": "src/app.js",
+    "author": {
+      "name": "Dan Motzenbecker",
+      "email": "dan@oxism.com",
+      "url": "http://oxism.com"
+    },
+    "scripts": {
+      "build": "npm run build-css && npm run build-js",
+      "build-js": "NODE_ENV=production browserify -e src/app.js -t babelify -g envify -g unassertify -g uglifyify | sed 's/@@@@@/'$(rev < api_key)'/g' > app.js",
+      "build-css": "stylus -c -u nib style/main.styl -o app.css",
+      "deploy": "npm run build && gcloud app deploy --project=thing-translator --quiet",
+      "start": "parallelshell 'npm run watch' 'npm run watch-style'",
+      "watch": "budo src/app.js --live --host localhost -- -t babelify",
+      "watch-style": "stylus -c -u nib -w style/main.styl -o app.css"
+    },
+    "license": "MIT",
+    "dependencies": {
+      "array.prototype.find": "^2.1.1",
+      "array.prototype.findindex": "^2.1.0",
+      "choo": "^4.0.3",
+      "he": "^1.2.0",
+      "nib": "^1.1.2",
+      "xhr": "^2.6.0"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.13.10",
+      "@babel/preset-env": "^7.9.0",
+      "babel-plugin-yo-yoify": "^2.0.0",
+      "babelify": "^10.0.0",
+      "browserify": "^17.0.0",
+      "budo": "^11.6.3",
+      "distilla": "0.0.1",
+      "envify": "^4.1.0",
+      "parallelshell": "3.0.1",
+      "stylus": "^0.54.8",
+      "uglifyify": "^5.0.2",
+      "unassertify": "^2.1.1"
+    },
+    "browserify": {
+      "transform": [
+        [
+          "babelify",
+          {
+            "presets": [
+              "@babel/preset-env"
+            ],
+            "plugins": [
+              "yo-yoify"
+            ]
+          }
+        ]
+      ]
+    }
+  }
